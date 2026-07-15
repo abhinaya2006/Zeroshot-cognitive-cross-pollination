@@ -1,0 +1,32 @@
+services:
+  # Backend FastAPI service
+  - type: web
+    name: cognitive-cross-pollination-backend
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    context: backend
+    plan: free
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 8000
+      - key: DATABASE_URL
+        value: sqlite:////data/cognitive_cross_pollination.db
+      - key: EMBEDDINGS_MODEL
+        value: all-MiniLM-L6-v2
+      - key: GROQ_API_KEY
+        sync: false # User will provide this in the Render dashboard
+
+  # Frontend Next.js service
+  - type: web
+    name: cognitive-cross-pollination-frontend
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm run start
+    publishPath: frontend/.next
+    rootDir: frontend
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://cognitive-cross-pollination-backend.onrender.com # Fallback placeholder

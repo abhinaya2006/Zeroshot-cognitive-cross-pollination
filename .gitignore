@@ -1,0 +1,54 @@
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python virtual envs and dependencies
+.venv/
+venv/
+ENV/
+env/
+bin/
+include/
+lib/
+share/
+pyvenv.cfg
+
+# Python caches and compiler files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# SQLite databases (local caches)
+*.db
+*.sqlite
+*.sqlite3
+
+# Node dependencies
+frontend/node_modules/
+frontend/jspm_packages/
+
+# Next.js build outputs and caches
+.next/
+out/
+build/
+dist/
+
+# IDE / Editor configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
