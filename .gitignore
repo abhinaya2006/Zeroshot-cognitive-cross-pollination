@@ -34,6 +34,8 @@ htmlcov/
 frontend/node_modules/
 frontend/jspm_packages/
 
+
+
 # Next.js build outputs and caches
 .next/
 out/
@@ -52,3 +54,4 @@ dist/
 # OS files
 .DS_Store
 Thumbs.db
+
