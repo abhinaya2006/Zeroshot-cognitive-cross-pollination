@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     groq_api_key: str = ""
+    groq_model: str = ""
     host: str = "127.0.0.1"
     port: int = 8000
     database_url: str = "sqlite:///./cognitive_cross_pollination.db"

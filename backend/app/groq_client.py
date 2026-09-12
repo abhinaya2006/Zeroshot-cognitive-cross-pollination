@@ -18,12 +18,32 @@ class GroqClientWrapper:
             print("WARNING: GROQ_API_KEY not set. Operating in MOCK mode.")
 
         # Models list, in order of preference
-        self.models = [
+        candidate_models = [
+            "qwen/qwen3.8-27b",
+            "openai/gpt-oss-20b",
+            "llama-3.3-70b-versatile",
             "llama-3.1-8b-instant",
-            "gemma2-9b-it",
-            "llama3-8b-8192",
-            "mixtral-8x7b-32768"
+            "qwen/qwen3.6-27b",
+            "openai/gpt-oss-120b",
+            "gemma2-9b-it"
         ]
+        if getattr(settings, "groq_model", ""):
+            candidate_models.insert(0, settings.groq_model)
+
+        self.models = candidate_models
+        if self.client:
+            try:
+                available = {m.id for m in self.client.models.list().data}
+                matched = [m for m in candidate_models if m in available]
+                if matched:
+                    self.models = matched
+                else:
+                    chat_candidates = [m for m in available if not m.startswith("whisper") and "guard" not in m]
+                    if chat_candidates:
+                        self.models = sorted(chat_candidates)
+                print(f"Active Groq models detected: {self.models}")
+            except Exception as e:
+                print(f"Notice: Could not query available Groq models ({e}), using candidate list.")
 
     def _get_mock_response(self, prompt: str, system_prompt: str = "") -> str:
         """Returns a generic mock response when API key is missing."""
@@ -209,7 +229,10 @@ class GroqClientWrapper:
                     print(f"Groq Rate Limit (Model: {model}). Retrying in {wait_time:.2f}s... Error: {e}")
                     time.sleep(wait_time)
                 except Exception as e:
-                    # Other exceptions (e.g. model overloaded, temporary issue)
+                    err_str = str(e)
+                    if "model_decommissioned" in err_str or "model_not_found" in err_str or "404" in err_str:
+                        print(f"Model {model} is unavailable/decommissioned ({err_str}). Moving to next model...")
+                        break
                     wait_time = base_delay * (2 ** attempt)
                     print(f"Groq error (Model: {model}, Attempt {attempt+1}/{max_retries}): {e}. Retrying...")
                     time.sleep(wait_time)
