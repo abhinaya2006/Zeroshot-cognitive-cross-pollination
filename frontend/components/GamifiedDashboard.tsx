@@ -18,6 +18,8 @@ import {
   Zap
 } from "lucide-react";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function GamifiedDashboard() {
   const [userId, setUserId] = useState("learner_42");
   const [knownTopic, setKnownTopic] = useState("Baking bread");
@@ -48,7 +50,7 @@ export default function GamifiedDashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/user/${userId}`);
+      const res = await fetch(`${API_BASE_URL}/api/user/${userId}`);
       if (res.ok) {
         const data = await res.json();
         setUserStats({
@@ -74,7 +76,7 @@ export default function GamifiedDashboard() {
     setShowHint(false);
 
     try {
-      const res = await fetch("http://localhost:8000/api/generate", {
+      const res = await fetch(`${API_BASE_URL}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -116,7 +118,7 @@ export default function GamifiedDashboard() {
         required_rule_to_apply: apiResult.challenge.required_rule_to_apply
       };
 
-      const res = await fetch("http://localhost:8000/api/submit-challenge", {
+      const res = await fetch(`${API_BASE_URL}/api/submit-challenge`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
